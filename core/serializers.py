@@ -19,6 +19,11 @@ class UserSerializer(serializers.ModelSerializer):
         lookup_url_kwarg='user_id'
     )
 
+    @classmethod
+    def setup_eager_loading(cls, queryset):
+        queryset = queryset.prefetch_related('user_permissions')
+        return queryset
+
     class Meta:
         model = User
         fields = ['id', 'username', 'url', 'user_permissions']
