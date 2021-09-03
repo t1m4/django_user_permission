@@ -58,15 +58,12 @@ def split_phrase(phrase, query=None):
     # divided phrase into two string using first operator
     divided_by_operator = re.split("and|AND|or|OR", phrase, maxsplit=1)
     phrase_divided_by_operator = [i.strip() for i in divided_by_operator]
-    print(divided_by_operator)
-    import pdb
-    pdb.set_trace()
+
     # if only one expression without 'and' or 'or'
     if len(phrase_divided_by_operator) != 2:
         expression = phrase_divided_by_operator[0].strip("(").strip(")")
         field, operator, value = expression.split(" ")
         check_valid_compare_operator(operator)
-        # TODO change value type
         expression_kwargs = {field + "__" + operator: value}
         query = Q(**expression_kwargs)
         return query
