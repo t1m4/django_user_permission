@@ -38,7 +38,8 @@ INSTALLED_APPS = [
 ]
 
 INSTALLED_APPS += [
-    'core'
+    'core',
+    'complex_queries'
 ]
 
 INSTALLED_APPS += [
