@@ -3,23 +3,19 @@ import re
 
 from django.db.models import Q
 
-
-def is_correct_brackets(phrase):
+def is_correct_brackets(value):
     """
     Check correct brackets in phrase
     """
-    stack = []
-
-    for symbol in phrase:
-        if symbol == '(':
-            stack.append("(")
-        elif symbol == ')':
-            try:
-                stack.remove("(")
-            except ValueError:
-                return False
-
-    return not stack
+    count = 0
+    for symbol in value:
+        if symbol == "(":
+            count += 1
+        elif symbol == ")":
+            count -= 1
+        if count < 0:
+            return False
+    return count == 0
 
 
 def get_first_operator(phrase):
