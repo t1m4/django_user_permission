@@ -1,6 +1,5 @@
-from django.contrib.auth.models import Permission, User, Group
+from django.contrib.auth.models import User, Group
 from rest_framework import generics
-from rest_framework.exceptions import NotFound
 from rest_framework.generics import get_object_or_404
 
 from users.serializers import PermissionSerializer, UserSerializer
@@ -41,14 +40,8 @@ class UserPermissionsListView(generics.ListCreateAPIView):
         return user.user_permissions.all()
 
     def perform_create(self, serializer):
-        permission = get_object_or_404(Permission, id=serializer.validated_data['id'])
-        group = Group.objects.get(name='core_permissions')
-        allowed_permissions = group.permissions.all()
-        if permission in allowed_permissions:
-            user = self.get_current_user()
-            user.user_permissions.add(permission)
-        else:
-            raise NotFound(detail="Not Found.")
+        user = self.get_current_user()
+        serializer.save(user=user)
 
 
 class UserPermissionsDetailView(generics.RetrieveAPIView,
