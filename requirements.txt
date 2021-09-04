@@ -4,7 +4,7 @@ location==0.0.7
 pytz==2021.1
 sqlparse==0.4.1
 
-djangorestframework
-django-debug-toolbar
+djangorestframework===3.12.4
+django-debug-toolbar==3.2.2
 
-coverage
+coverage==5.5
