@@ -8,11 +8,7 @@ from core.serializers import PermissionSerializer, UserSerializer
 
 class UserListView(generics.ListAPIView):
     serializer_class = UserSerializer
-
-    def get_queryset(self):
-        queryset = User.objects.all()
-        queryset = self.get_serializer_class().setup_eager_loading(queryset)
-        return queryset
+    queryset = User.objects.all().prefetch_related('user_permissions')
 
 
 class UserDetailView(generics.RetrieveAPIView):
