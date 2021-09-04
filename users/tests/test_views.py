@@ -30,7 +30,7 @@ class UserListViewTest(APITestCase):
 
     @classmethod
     def setUpTestData(cls):
-        cls.user_list_url = reverse('core-user_list')
+        cls.user_list_url = reverse('users-user_list')
 
     def setUp(self):
         create_users(count_of_users=2)
@@ -50,8 +50,8 @@ class UserListViewTest(APITestCase):
 class UserPermissionsListViewTest(APITestCase):
     @classmethod
     def setUpTestData(cls):
-        cls.permissions_list_url = reverse('core-user_permissions_list', kwargs={"user_id": 1})
-        cls.invalid_permissions_list_url = reverse('core-user_permissions_list', kwargs={"user_id": 100})
+        cls.permissions_list_url = reverse('users-user_permissions_list', kwargs={"user_id": 1})
+        cls.invalid_permissions_list_url = reverse('users-user_permissions_list', kwargs={"user_id": 100})
 
 
     def setUp(self):
@@ -116,17 +116,17 @@ class UserPermissionsDetailViewTest(APITestCase):
         content_type = ContentType.objects.get(model='location')
         permissions = Permission.objects.filter(content_type=content_type)
         id = permissions.get(codename='view_location').id
-        permissions_detail_url = reverse('core-user_permission_detail', kwargs={"user_id": 1, "permission_id": id})
+        permissions_detail_url = reverse('users-user_permission_detail', kwargs={"user_id": 1, "permission_id": id})
         response = self.client.delete(permissions_detail_url)
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
 
 
     def test_cannot_add_not_existing_permission(self):
-        permissions_detail_url = reverse('core-user_permission_detail', kwargs={"user_id": 1, "permission_id": 100})
+        permissions_detail_url = reverse('users-user_permission_detail', kwargs={"user_id": 1, "permission_id": 100})
         response = self.client.delete(permissions_detail_url)
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
     def test_cannot_add_permission_to_not_existing_user(self):
-        permissions_detail_url = reverse('core-user_permission_detail', kwargs={"user_id": 100, "permission_id": 1})
+        permissions_detail_url = reverse('users-user_permission_detail', kwargs={"user_id": 100, "permission_id": 1})
         response = self.client.delete(permissions_detail_url)
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)

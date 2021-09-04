@@ -31,7 +31,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('data', models.CharField(max_length=100)),
-                ('location', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='core.location')),
+                ('location', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='users.location')),
             ],
         ),
     ]

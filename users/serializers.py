@@ -15,7 +15,7 @@ class UserSerializer(serializers.ModelSerializer):
     user_permissions = PermissionSerializer(many=True, read_only=True)
 
     url = serializers.HyperlinkedIdentityField(
-        view_name='core-user_detail',
+        view_name='users-user_detail',
         lookup_url_kwarg='user_id'
     )
 

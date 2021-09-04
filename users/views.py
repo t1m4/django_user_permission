@@ -3,7 +3,7 @@ from rest_framework import generics
 from rest_framework.exceptions import NotFound
 from rest_framework.generics import get_object_or_404
 
-from core.serializers import PermissionSerializer, UserSerializer
+from users.serializers import PermissionSerializer, UserSerializer
 
 
 class UserListView(generics.ListAPIView):
