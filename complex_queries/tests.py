@@ -22,9 +22,9 @@ class ComplexQuerying(TestCase):
         raw_queryset = Competition.objects.filter(search_filter).order_by('id')
 
         today = datetime.date(year=2021, month=9, day=2)
-        queryset = Competition.objects.filter(Q(date__gt=today) & (Q(distance__gt=20) | Q(distance__lt=10))).order_by('id')
+        queryset = Competition.objects.filter(Q(date__gt=today) & (Q(distance__gt=20) | Q(distance__lt=10))).order_by(
+            'id')
         self.assertQuerysetEqual(raw_queryset, queryset)
-
 
     def test_can_query_one_queryset(self):
         search_phrase = "(distance gt 20)"
