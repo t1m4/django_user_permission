@@ -1,6 +1,5 @@
 from itertools import chain
 
-import permission as permission
 from django.contrib.auth.models import User, Permission, Group
 from django.contrib.contenttypes.models import ContentType
 from django.urls import reverse
@@ -21,6 +20,7 @@ def create_users(count_of_users):
         user_data['password'] += str(index)
         User.objects.create(**user_data)
 
+
 def get_content_type_permissions(model):
     content_type = ContentType.objects.get(model=model)
     return Permission.objects.filter(content_type=content_type)
@@ -30,7 +30,7 @@ class UserListViewTest(APITestCase):
 
     @classmethod
     def setUpTestData(cls):
-        cls.user_list_url = reverse('users-user_list')
+        cls.user_list_url = reverse('users-list')
 
     def setUp(self):
         create_users(count_of_users=2)
@@ -47,24 +47,28 @@ class UserListViewTest(APITestCase):
         self.assertIsNotNone(first_user.get('user_permissions'))
 
 
+def create_group():
+    location_permissions = get_content_type_permissions('location')
+    module_permissions = get_content_type_permissions('module')
+    total_permissions = list(chain(location_permissions, module_permissions))
+    group = Group.objects.create(name='core_permissions')
+    group.permissions.set(total_permissions)
+
+
 class UserPermissionsListViewTest(APITestCase):
     @classmethod
     def setUpTestData(cls):
-        cls.permissions_list_url = reverse('users-user_permissions_list', kwargs={"user_id": 1})
-        cls.invalid_permissions_list_url = reverse('users-user_permissions_list', kwargs={"user_id": 100})
-
+        cls.permissions_list_url = reverse('user_permissions-list', kwargs={"user_id": 1})
+        cls.invalid_permissions_list_url = reverse('user_permissions-list', kwargs={"user_id": 100})
 
     def setUp(self):
         create_users(count_of_users=2)
 
         user = User.objects.first()
         location_permissions = get_content_type_permissions('location')
-        module_permissions = get_content_type_permissions('module')
         user.user_permissions.set(location_permissions)
 
-        total_permissions = list(chain(location_permissions, module_permissions))
-        group = Group.objects.create(name='core_permissions')
-        group.permissions.set(total_permissions)
+        create_group()
 
     def test_can_get_user_permissions(self):
         response = self.client.get(self.permissions_list_url)
@@ -105,28 +109,24 @@ class UserPermissionsDetailViewTest(APITestCase):
 
         user = User.objects.first()
         location_permissions = get_content_type_permissions('location')
-        module_permissions = get_content_type_permissions('module')
         user.user_permissions.set(location_permissions)
 
-        total_permissions = list(chain(location_permissions, module_permissions))
-        group = Group.objects.create(name='core_permissions')
-        group.permissions.set(total_permissions)
+        create_group()
 
     def test_can_delete_user_permission(self):
         content_type = ContentType.objects.get(model='location')
         permissions = Permission.objects.filter(content_type=content_type)
         id = permissions.get(codename='view_location').id
-        permissions_detail_url = reverse('users-user_permission_detail', kwargs={"user_id": 1, "permission_id": id})
+        permissions_detail_url = reverse('user_permissions-detail', kwargs={"user_id": 1, "permission_id": id})
         response = self.client.delete(permissions_detail_url)
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
 
-
     def test_cannot_add_not_existing_permission(self):
-        permissions_detail_url = reverse('users-user_permission_detail', kwargs={"user_id": 1, "permission_id": 100})
+        permissions_detail_url = reverse('user_permissions-detail', kwargs={"user_id": 1, "permission_id": 100})
         response = self.client.delete(permissions_detail_url)
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
     def test_cannot_add_permission_to_not_existing_user(self):
-        permissions_detail_url = reverse('users-user_permission_detail', kwargs={"user_id": 100, "permission_id": 1})
+        permissions_detail_url = reverse('user_permissions-detail', kwargs={"user_id": 100, "permission_id": 1})
         response = self.client.delete(permissions_detail_url)
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
