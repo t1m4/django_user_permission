@@ -11,6 +11,7 @@ class UserPermissionSerializer(serializers.ModelSerializer):
 
     def save(self, user):
         user.user_permissions.add(self.validated_data['permission'])
+        return user
 
 
 class PermissionSerializer(serializers.ModelSerializer):
