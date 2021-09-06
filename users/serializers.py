@@ -28,7 +28,6 @@ class UserSerializer(serializers.ModelSerializer):
 
     url = serializers.HyperlinkedIdentityField(
         view_name='users-detail',
-        lookup_url_kwarg='user_id'
     )
 
     class Meta:
