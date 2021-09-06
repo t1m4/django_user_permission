@@ -1,4 +1,4 @@
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Permission
 from rest_framework import viewsets, status
 from rest_framework.decorators import action
 from rest_framework.generics import get_object_or_404
@@ -39,3 +39,7 @@ class UserViewSet(viewsets.ReadOnlyModelViewSet):
         user.user_permissions.remove(user_permission)
         return Response(status.HTTP_204_NO_CONTENT)
 
+
+class PermissionViewSet(viewsets.ReadOnlyModelViewSet):
+    serializer_class = PermissionSerializer
+    queryset = Permission.objects.all()
