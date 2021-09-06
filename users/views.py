@@ -39,7 +39,7 @@ class UserViewSet(viewsets.ReadOnlyModelViewSet):
         user = self.get_object()
         user_permission = get_object_or_404(user.user_permissions, id=permission_id)
         user.user_permissions.remove(user_permission)
-        return Response(status.HTTP_204_NO_CONTENT)
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class PermissionViewSet(viewsets.ReadOnlyModelViewSet):
