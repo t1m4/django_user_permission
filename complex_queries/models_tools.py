@@ -3,6 +3,7 @@ import re
 
 from django.db.models import Q
 
+
 def is_correct_brackets(value):
     """
     Check correct brackets in phrase
