@@ -28,7 +28,7 @@ class UserViewSet(viewsets.ReadOnlyModelViewSet):
     @action(detail=True, methods=['post'], url_path='update_permissions', url_name='update_permissions')
     def update_user_permissions(self, request, pk=None):
         user = self.get_object()
-        serializer = self.get_serializer_class()(data=request.data)
+        serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save(user=user)
         return Response(serializer.data, status=status.HTTP_201_CREATED)

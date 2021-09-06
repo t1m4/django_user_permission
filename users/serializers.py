@@ -1,14 +1,16 @@
 from django.contrib.auth.models import Permission, User
 from rest_framework import serializers
-from rest_framework.generics import get_object_or_404
 
 
-class UserPermissionSerializer(serializers.Serializer):
-    id = serializers.IntegerField(min_value=1)
+class UserPermissionSerializer(serializers.ModelSerializer):
+    permission = serializers.PrimaryKeyRelatedField(queryset=Permission.objects.all())
+
+    class Meta:
+        model = User
+        fields = ['permission', ]
 
     def save(self, user):
-        permission = get_object_or_404(Permission, id=self.validated_data['id'])
-        user.user_permissions.add(permission)
+        user.user_permissions.add(self.validated_data['permission'])
 
 
 class PermissionSerializer(serializers.ModelSerializer):
