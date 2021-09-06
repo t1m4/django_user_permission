@@ -17,7 +17,6 @@ class UserViewSet(viewsets.ReadOnlyModelViewSet):
             return PermissionSerializer
         return self.serializer_class
 
-    # @action(detail=True, methods=['get', 'post'], url_path='permissions', url_name="user_permissions-list")
     @action(detail=True, methods=['get', 'post'], url_path='permissions', url_name="permissions_list")
     def create_permissions(self, request, user_id=None):
         if request.method == "POST":
@@ -36,7 +35,6 @@ class UserViewSet(viewsets.ReadOnlyModelViewSet):
             url_name='permissions_detail')
     def delete_permissions(self, request, user_id=None, permission_id=None):
         user = get_object_or_404(User, id=user_id)
-        print(user_id, permission_id)
         user_permission = get_object_or_404(user.user_permissions, id=permission_id)
         user.user_permissions.remove(user_permission)
         return Response(status.HTTP_204_NO_CONTENT)
