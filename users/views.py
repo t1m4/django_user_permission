@@ -4,7 +4,7 @@ from rest_framework.decorators import action
 from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
 
-from users.serializers import PermissionSerializer, UserSerializer
+from users.serializers import UserPermissionSerializer, UserSerializer, PermissionSerializer
 
 
 class UserViewSet(viewsets.ReadOnlyModelViewSet):
@@ -12,15 +12,17 @@ class UserViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = User.objects.all().prefetch_related('user_permissions')
 
     def get_serializer_class(self):
-        if self.action == 'delete_user_permissions' or self.action == 'get_user_permissions' or self.action == 'update_user_permissions':
+        if self.action == 'get_user_permissions':
             return PermissionSerializer
+        elif self.action == 'update_user_permissions':
+            return UserPermissionSerializer
         return super(UserViewSet, self).get_serializer_class()
 
     @action(detail=True, methods=['get'], url_path='get_permissions', url_name='get_permissions')
     def get_user_permissions(self, request, pk=None):
         user = self.get_object()
         permissions = user.user_permissions.all()
-        serializer = self.get_serializer_class()(permissions, many=True)
+        serializer = self.get_serializer(permissions, many=True)
         return Response(serializer.data)
 
     @action(detail=True, methods=['post'], url_path='update_permissions', url_name='update_permissions')
